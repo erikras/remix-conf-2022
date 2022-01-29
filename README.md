@@ -2,7 +2,7 @@
 
 This is a _rough_ proof of concept RFC for a potential talk at Remix Conf 2022.
 
-You've been invited to see it because you are experts on parts of the tech used. Feedback more than welcome! 🙏
+You've been invited to see it because you are experts on parts of the tech used. Feedback more than welcome! 🙏 (Maybe through twitter DM or issue or PR?)
 
 ## Features
 
@@ -10,6 +10,7 @@ You've been invited to see it because you are experts on parts of the tech used.
 - Refresh works
 - If you go to the root route, it will forward you to where the machine from the cookie thinks you should be
 - Back and Forward browser buttons work
+- Oh, and it works with JS disabled! 😎
 
 ## Limitations
 
