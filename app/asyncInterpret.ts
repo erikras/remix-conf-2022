@@ -35,27 +35,20 @@ export function asyncInterpret<
     let skipFirstDone = isDoneState(initialState);
     const service = interpret(machine, options);
     service.subscribe((state) => {
-      console.info("state.meta", state.meta);
       if (isDoneState(state)) {
-        console.info("done", state.value, !!t);
         if (skipFirstDone) {
-          console.info("skipping first done");
           skipFirstDone = false;
           return;
         }
         if (t) clearTimeout(t);
-        console.info("resolving");
         resolve(state);
       }
     });
     t = setTimeout(() => {
-      console.info("-------- TIMED OUT");
       service.stop();
       reject();
     }, timeout);
-    console.info("starting...");
     service.start(initialState);
-    console.info("sending", initialEvent);
     if (initialEvent) {
       service.send(initialEvent);
     }
