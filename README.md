@@ -1,53 +1,62 @@
-# Welcome to Remix!
+# Backend XState Machines on Remix
 
-- [Remix Docs](https://remix.run/docs)
+This is a _rough_ proof of concept RFC for a potential talk at Remix Conf 2022.
 
-## Development
+You've been invited to see it because you are experts on parts of the tech used. Feedback more than welcome! 🙏
 
-From your terminal:
+## Features
 
-```sh
-npm run dev
-```
+- Context is maintained, incrementing a `transitions` value every time the machine transitions to a new state.
+- Refresh works
+- If you go to the root route, it will forward you to where the machine from the cookie thinks you should be
+- Back and Forward browser buttons work
 
-This starts your app in development mode, rebuilding assets on file changes.
+## Limitations
 
-## Deployment
+- In order for the back and forward browser buttons to work, I had to disable caching, to force the `loader()` to run. 😢
 
-First, build your app for production:
+## How it works
 
-```sh
-npm run build
-```
+### Async Interpret
 
-Then run the app in production mode:
+This is the real trick to getting XState to work on the backend. You have to instantiate (interpret) a machine, subscribe to it, potentially send an event to start things moving, and then wait for a "done" state, timing out otherwise.
 
-```sh
-npm start
-```
+I can't use `{ type: 'final' }` from the XState API to mark states as "done", because then XState will shut down the machine before I can send my `initialEvent`. Because, sort of by definition, all rehydrated machines are already in a "done" state from the last time they ran on the server.
 
-Now you'll need to pick a host to deploy it to.
+To solve this, I've placed a `meta: { done: true }` on the states that are "done" states. Keep in mind that not all states will be "done" when it starts to need async "loading" states.
 
-### DIY
+It would be awesome if there were first party support for this in XState.
 
-If you're familiar with deploying node applications, the built-in Remix app server is production-ready.
+### Root Route
 
-Make sure to deploy the output of `remix build`
+#### Loader
 
-- `build/`
-- `public/build/`
+- Checks if there's an existing machine saved in the cookie
+  - If there is, it forwards the user to the route for the current state
+- If no cookie – we're starting fresh – it boots up the machine, and waits for it to settle onto a "done" state, and:
+  - Saves the machine to a cookie
+  - Forwards the user to the "initial" route
 
-### Using a Template
+### State Route
 
-When you ran `npx create-remix@latest` there were a few choices for hosting. You can run that again to create a new project, then copy over your `app/` folder to the new project that's pre-configured for your target server.
+#### Loader
 
-```sh
-cd ..
-# create a new project, and pick a pre-configured host
-npx create-remix@latest
-cd my-new-remix-app
-# remove the new project's app (not the old one!)
-rm -rf app
-# copy your app over
-cp -R ../my-old-remix-app/app app
-```
+- If there's not a machine in a cookie, it redirects to Root Route
+- If the route matches the current machine state, it returns the machine state
+- If the current route does not match the current route in the machine from the cookie, it sends a `GOTO` event to the machine to send it to the state that matches the route.
+  - This, and disabling browser caching 😢, is what allows the Back/Forward browser buttons to work
+
+#### Action
+
+Here's where the fun stuff happens!
+
+- It finds the machine from the cookie
+  - If the cookie has been erased for some reason, it bails out to the Root Route
+- It gets the event to send from the `formData`
+- It instantiates the machine with the state from the cookie and sends the event.
+- If the new state is the same as the previous state (very common in XState), saves the new machine state as a cookie
+- If the new state is different, it redirects to that url and saves the new machine state as a cookie
+
+---
+
+Thanks! ❤️ – [@erikras](https://twitter.com/erikras)
