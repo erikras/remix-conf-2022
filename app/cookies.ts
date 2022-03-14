@@ -1,5 +1,5 @@
 import { createCookie } from "remix";
 
-export const checkoutMachineCookie = createCookie("checkout-machine", {
-  secrets: ["r3m1x-c0nF-zO2"],
+export const swagStoreMachineCookie = createCookie("swag-store-machine", {
+  secrets: ["r3m1x-c0nF-2022"],
 });

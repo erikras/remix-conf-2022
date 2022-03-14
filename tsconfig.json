@@ -1,5 +1,16 @@
 {
-  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "remix.env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "app/asyncInterpret.js",
+    "app/storeMachine.js",
+    "app/routes/index.jsx",
+    "app/routes/$state/index.jsx",
+    "app/entry.client.jsx",
+    "app/entry.server.jsx",
+    "app/root.jsx"
+  ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
     "isolatedModules": true,

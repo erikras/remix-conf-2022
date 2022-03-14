@@ -7,10 +7,14 @@ import {
   ScrollRestoration,
 } from "remix";
 
-import type { MetaFunction } from "remix";
+import styles from "./styles/app.css";
 
-export const meta: MetaFunction = () => {
-  return { title: "New Remix App" };
+export function links() {
+  return [{ rel: "stylesheet", href: styles }];
+}
+
+export const meta = () => {
+  return { title: "Remix Conf 2022 – State Machines On The Edge" };
 };
 
 export default function App() {
@@ -22,8 +26,10 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body>
-        <Outlet />
+      <body className="bg-slate-300 dark:bg-slate-800">
+        <article className="prose prose-stone lg:prose-xl dark:prose-invert max-w-5xl mx-auto my-8 px-5">
+          <Outlet />
+        </article>
         <ScrollRestoration />
         <Scripts />
         {process.env.NODE_ENV === "development" && <LiveReload />}
