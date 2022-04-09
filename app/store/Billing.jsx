@@ -30,10 +30,9 @@ export function Billing() {
               className="mt-1 block w-full rounded-full py-3 px-5 appearance-none relative"
               name="state"
               defaultValue={state.context.billing?.state}
-              required
             >
               <option value="">Select a state...</option>
-              {state.context.shippingStates.map((state) => (
+              {state.context.shippingStates?.map((state) => (
                 <option key={state} value={state}>
                   {state}
                 </option>

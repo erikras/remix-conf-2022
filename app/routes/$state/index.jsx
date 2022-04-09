@@ -1,16 +1,15 @@
-import { Form, json, redirect, useLoaderData } from "remix";
-
+import { json, redirect, useLoaderData } from "remix";
 import { State } from "xstate";
 import { asyncInterpret } from "../../asyncInterpret";
-import { swagStoreMachineCookie } from "../../cookies";
-import { swagStoreMachine, pauseStates } from "../../swagStoreMachine";
-import { Cart } from "../../store/Cart";
-import { Shipping } from "../../store/Shipping";
-import { Billing } from "../../store/Billing";
-import { Confirmation } from "../../store/Confirmation";
-import { OrderSuccess } from "../../store/OrderSuccess";
-import { NotFound } from "../../store/NotFound";
 import confetti from "../../confetti.css";
+import { swagStoreMachineCookie } from "../../cookies";
+import { Billing } from "../../store/Billing";
+import { Cart } from "../../store/Cart";
+import { Confirmation } from "../../store/Confirmation";
+import { NotFound } from "../../store/NotFound";
+import { OrderSuccess } from "../../store/OrderSuccess";
+import { Shipping } from "../../store/Shipping";
+import { swagStoreMachine } from "../../swagStoreMachine";
 
 export const readCookie = async (request) => {
   const oldCookie = request.headers.get("Cookie");
@@ -30,60 +29,54 @@ export function links() {
 
 export const loader = async ({ request, params: { state } }) => {
   const stateConfig = await readCookie(request);
-  if (stateConfig) {
-    // found state in cookie
-    if (state) {
-      const currentState = await swagStoreMachine.resolveState(
-        State.create(stateConfig),
-      );
-      if (stateConfig.value === state) {
-        // the state from the cookie matches the url
-        return json(
-          currentState,
-          currentState.done
-            ? {
-                headers: {
-                  "Set-Cookie": await swagStoreMachineCookie.serialize(
-                    {},
-                    { expires: new Date(0) },
-                  ),
-                },
-              }
-            : undefined,
-        );
-      } else {
-        // transition to the state that matches the url, and return that
-        const transitionState = await asyncInterpret(
-          swagStoreMachine,
-          pauseStates,
-          3_000,
-          currentState,
-          { type: "Goto", destination: state },
-        );
-        return json(transitionState, {
-          headers: {
-            "Set-Cookie": await swagStoreMachineCookie.serialize(
-              transitionState,
-            ),
-          },
-        });
-      }
-    }
+  if (!stateConfig || !state) {
+    // No cookie, so start over
+    return redirect("..");
   }
-  // no cookie, so start over
-  return redirect("..");
+  // Convert cookie into machine state
+  const currentState = await swagStoreMachine.resolveState(
+    State.create(stateConfig),
+  );
+  if (stateConfig.value === state) {
+    // The state from the cookie matches the url
+    return json(
+      currentState,
+      currentState.done // Clear the cookie if we are done
+        ? {
+            headers: {
+              "Set-Cookie": await swagStoreMachineCookie.serialize(
+                {},
+                { expires: new Date(0) },
+              ),
+            },
+          }
+        : undefined,
+    );
+  } else {
+    // Transition to the state that matches the url, and return that
+    const transitionState = await asyncInterpret(
+      swagStoreMachine, //                     machine definition
+      3_000, //                                timeout
+      currentState, //                         current state
+      { type: "Goto", destination: state }, // event to send
+    );
+    return json(transitionState, {
+      headers: {
+        "Set-Cookie": await swagStoreMachineCookie.serialize(transitionState),
+      },
+    });
+  }
 };
 
 export const action = async ({ request, params: { state } }) => {
   const stateConfig = await readCookie(request);
-  if (!stateConfig) return redirect(".."); // no cookie, so start over
+  if (!stateConfig) return redirect(".."); // No cookie, so start over
 
   const currentState = swagStoreMachine.resolveState(stateConfig);
   const event = Object.fromEntries(await request.formData());
 
   const nextState = await asyncInterpret(
     swagStoreMachine,
-    pauseStates,
     3_000,
     currentState,
     event,

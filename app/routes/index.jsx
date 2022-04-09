@@ -1,8 +1,7 @@
-import { json, redirect } from "remix";
-import { swagStoreMachine, pauseStates } from "../swagStoreMachine";
-
+import { redirect } from "remix";
 import { asyncInterpret } from "../asyncInterpret";
 import { swagStoreMachineCookie } from "../cookies";
+import { swagStoreMachine } from "../swagStoreMachine";
 import { readCookie } from "./$state";
 
 export const loader = async ({ request }) => {
@@ -12,11 +11,7 @@ export const loader = async ({ request }) => {
     return redirect(String(stateConfig.value));
   }
 
-  const swagStoreState = await asyncInterpret(
-    swagStoreMachine,
-    pauseStates,
-    3_000,
-  );
+  const swagStoreState = await asyncInterpret(swagStoreMachine, 3_000);
   return redirect(String(swagStoreState.value), {
     headers: {
       "Set-Cookie": await swagStoreMachineCookie.serialize(swagStoreState),

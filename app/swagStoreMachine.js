@@ -1,16 +1,8 @@
 import { assign, createMachine } from "xstate";
 import { db } from "./db";
 
-export const pauseStates = [
-  "Cart",
-  "Shipping",
-  "Billing",
-  "Confirmation",
-  "Order Success",
-];
-
 export const swagStoreMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QGUDuBDKACZAXA9gE5gB0AwuobgMQAiYAxsQLZgB2uWACofhAK4NciUAAd8sAJa5J+NiJAAPRAEYATAHYAzCTUAWABwaVATj0BWPSYAM1gwBoQAT0QBaczrVetagGy+tE3VfAy09AF9wxzRMHAJickoaAEk2JjBWDm5eASEFcSkZOQVlBHUtXxI9AIMDIOsK8xVfRxcEV1NzEms9Yy1zA0stU3VI6IxsPCJSCipqMgALRgBrfH5hJBAC6Vl5TdKTQZIVZt8TLQ1fazUDPTVWxH1rEhM+oxMPEKu1MZAYyfipGQC0kolEkjYUGoADkwIoNmIJDtivtVOZfBpjsYNK9jDccfdnIhAl1-P5zk0NNZLlpfv84tMSMDQeDIdQAELoBjLLAELCzBFbJFFPagUrqdEkcznYx1PTWEKHB4INQVEihMJ6KxhDRqGwaOkTBkJdmSAA2ZohUNh8Pywt2JTRBkqeguWgMXgClkMypUtj0JC0QbC7pOgSDhtiUxN5stbM53LthQdqLKARMx3l5g8VhU-XRyqDKhIZMuNwGBLU5kjAMZZDkADNJIRmOgRdQuGauWAsAB5QgQMCEJPI0VKYny9US6zmGe+U4OIkIXWVDVaBVV9SvH5RP5G6MzRvN1vtgCiEGkWFNFqtI5FjoQYWeBmns-RC+VRlXwY0tw9m9pXd6QPcgjxbNtdmoc9L2ZMFb02bZ71TJ8pyrGc5w-JdzA0Lo11-QwvCaQDxijQFQLYJtwPbBMeT5AU7xTMUJ2fV8MP8Rc2kCSpZ2sP0jHUFRsN8GtjVIAAZfB0AgHAQTgyE4jbOBqFg1kAUU2AsAkqTIAYlEmLKEMqgGLxtEMWpemVcw-ClHFrl1Zo7mdESQM7LkrT7Ach2oftB0IbguwYHSEPtPTx2XFQDBIHDbFsXVVWsEwWiXFd1WDDcmj1XVnMBagAHF8AIXSx1KO5lSCboYs0F8wlqMxIl3Ng+DgBRgLI+jguTULxV4yoEo9D1XRwvNzGVO4SzJeVErUUxXgMbLGRU+DEU64rVD0E4pV8fRnU0ecIo4xB1ufINqgMHpnTCasgP3MjrzjKAiofFQcJ0LarHlc71w9T9dSqYN4rsIxBnmhJ6wo48INCxDGLC9RMUsL51t8Dx0UGX1eIDMkQj1VU1GuEwQdIHyhxwQRAtgeAOtHB99RLfRDiCZH+g0ZVdUitc-F6aVfFdQmSC06TFvkvB1Me1M-Uldd+kCeU-EOA6ECsromn8MMTrqPnXIYdzieHKmkP02c1ClQT5ypSxpTfVmGkDYNXRfPNzmIvdSOmMX9Ii5VXBuZ4emMAJ-F-Owenq8IgA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QGUDuBDKACZAXA9gE5gB0AwuobgMQAiYAxsQLZgB2uWACofhAK4NciUAAd8sAJa5J+NiJAAPRABYAnADYSKgMw6ArCoCMRvSoAcGgDQgAnogBM+oyX0AGDyf0B2fRr1uKgC+QTZomDgExOSUNACSbExgrBzcvAJCCuJSMnIKygjqaq46am5qanpG+vpq3jb2CEYaKtoVZf4qDhqBmiFhGNh4RKQUVNRkABaMANb4-MJIINnSsvJLBRpq5iTeRube3v5u5k71dog6Dq16V8ZOKro65v0g4UNRpMiTkqKikmwoNQAHJgRSLMQSVZ5DaIaoObwka4OQItA7eLo6BqXfQOEjNDS1DQaSzeNw6Iyvd6REYkb6-f6A6gAIXQDBmWAIWDGEOWUNy61ABSMDiuJGJKlRe3cKh82IQKNa5j03T0+j0W28Dipgxp0WZkgANoaAUDQeCsvy1vk4YZWkY3EYuhU3P5zLL5ZUbrdSiKTOoXqE3rrhvqjSamaz2ZactbYU19OZit5zCYnddKpVzPKdIF8cSWid3T4LDqIqHRnIAGaSQjMdAC6hcQ1ssBYADyhAgYEIMehgqUlx0WnMqNlko0KfM2YuCAlJGVVy2TpMlm1QepFfI1dr9cbAFEINIsAbjaa+wKbQgNQux4ZXVOZ41U0rbhoRSiTj4yx9aWQd3WDZrNQh7HvSfznksKyXvGpTFBSDjTuoToqP4aj6PKsqIqYRSHM4uKUhuIafNubA1oBjZRhyXI8hecZCkOI53hOj45uobQVMSVyGBSbj6D+eqkAAMvg6AQDgPwQYCkQNnA1DgYyHyybAWAiWJkB0TCDFNNUSqoohfjoYEOalAuKqHOSw6dAJW7Nmypodl2PbUJ23aENwLYMBpUFWlpg5ztsuz7IcxynHKs7zou3RqCu+waOuAzlp81AAOL4AQmkDgUXSem4JDtNsw7TtOroaCEQZsHwcAKJuJG0T5sZ+QUuI7A4ahtXsHQumobE6Bx2y4pOOhHDZJEKZBkKNVlcLDS4-gIhSKhkn4pw5jUZkBOoirVIGiW-mGZ6AplV7NNOSI+JOk7qKUzzyqOeJPM8ypkiiWyjX+AF7vRfJTSdoquKhljuG4iHxVcnp6PmLRdFsPh8To73RK5PY4IIXmwPADX9le059XsBw1N0zTOCo8qEjsi4GM86qHM8iPCaJ4njdJeDKcd8a40FBODcTTo5giG2ir4ewIt4aj0yQdkMA5yO9ljMHaRYD3tCtdqJhhEWQ7coMyv4ib0+z2n7PK+j5SrZJ7CSTpi+VQRAA */
   createMachine(
     {
       context: { cart: {} },
@@ -20,78 +12,84 @@ export const swagStoreMachine =
         Goto: [
           {
             cond: "isCart",
-            target: "#Swag Store.Cart",
+            target: ".Cart",
+            internal: false,
           },
           {
             cond: "isShipping",
-            target: "#Swag Store.Shipping",
+            target: ".Shipping",
+            internal: false,
           },
           {
             cond: "isBilling",
-            target: "#Swag Store.Billing",
+            target: ".Billing",
+            internal: false,
           },
           {
             cond: "isConfirmation",
-            target: "#Swag Store.Confirmation",
-          },
-          {
-            cond: "isOrderSuccess",
-            target: "#Swag Store.Order Success",
+            target: ".Confirmation",
+            internal: false,
           },
         ],
       },
       states: {
         Cart: {
+          tags: "pause",
           on: {
             "Decrement Product": {
               actions: "decrementProduct",
-              target: "#Swag Store.Cart",
+              target: "Cart",
+              internal: false,
             },
             "Increment Product": {
               actions: "incrementProduct",
-              target: "#Swag Store.Cart",
+              target: "Cart",
+              internal: false,
             },
             Checkout: {
               cond: "hasItems",
-              target: "#Swag Store.Load Shipping States",
+              target: "Load Shipping States",
             },
           },
         },
         Shipping: {
+          tags: "pause",
           on: {
             Next: {
               actions: "saveShipping",
-              target: "#Swag Store.Billing",
+              target: "Billing",
             },
             "Back to Cart": {
-              target: "#Swag Store.Cart",
+              target: "Cart",
             },
           },
         },
         Billing: {
+          tags: "pause",
           on: {
             Next: {
               actions: "saveBilling",
-              target: "#Swag Store.Confirmation",
+              target: "Confirmation",
             },
             Back: {
-              target: "#Swag Store.Shipping",
+              target: "Shipping",
             },
           },
         },
         Confirmation: {
+          tags: "pause",
           on: {
             "Place Order": {
-              target: "#Swag Store.Placing Order",
+              target: "Placing Order",
             },
             "Edit Billing": {
-              target: "#Swag Store.Billing",
+              target: "Billing",
             },
             "Edit Shipping": {
-              target: "#Swag Store.Shipping",
+              target: "Shipping",
             },
             "Back to Cart": {
-              target: "#Swag Store.Cart",
+              target: "Cart",
             },
           },
         },
@@ -105,7 +103,7 @@ export const swagStoreMachine =
           on: {
             "Shipping States Loaded": {
               actions: "saveShippingStates",
-              target: "#Swag Store.Shipping",
+              target: "Shipping",
             },
           },
         },
@@ -115,7 +113,7 @@ export const swagStoreMachine =
           },
           on: {
             "Order Placed": {
-              target: "#Swag Store.Order Success",
+              target: "Order Success",
             },
           },
         },
@@ -161,8 +159,6 @@ export const swagStoreMachine =
         isBilling: (_context, event) => event.destination === "Billing",
         isConfirmation: (_context, event) =>
           event.destination === "Confirmation",
-        isOrderSuccess: (_context, event) =>
-          event.destination === "Order Success",
         hasItems: ({ cart }) =>
           Object.values(cart).some((quantity) => quantity > 0),
       },

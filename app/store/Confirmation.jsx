@@ -29,11 +29,11 @@ export function Confirmation() {
         <h3>Shipping</h3>
         <div className="flex">
           <div className="font-semibold mr-4 w-14">Name:</div>
-          <div>{state.context.shipping.name}</div>
+          <div>{state.context.shipping?.name}</div>
         </div>
         <div className="flex">
           <div className="font-semibold mr-4 w-14">State:</div>
-          <div>{state.context.shipping.state}</div>
+          <div>{state.context.shipping?.state}</div>
         </div>
         <div className="flex justify-end">
           <EventButton
@@ -49,11 +49,11 @@ export function Confirmation() {
         <h3>Billing</h3>
         <div className="flex">
           <div className="font-semibold mr-4 w-14">Name:</div>
-          <div>{state.context.billing.name}</div>
+          <div>{state.context.billing?.name}</div>
         </div>
         <div className="flex">
           <div className="font-semibold mr-4 w-14">State:</div>
-          <div>{state.context.billing.state}</div>
+          <div>{state.context.billing?.state}</div>
         </div>
         <div className="flex justify-end">
           <EventButton
