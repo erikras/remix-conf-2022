@@ -6,7 +6,7 @@ export function Cart() {
     <div>
       <h1>Cart</h1>
 
-      <ProductRow name="Remix Conf 2022 T-shirt" />
+      <ProductRow name="Reactathon 2022 T-shirt" />
       <ProductRow name="Centered.app Hoodie" />
       <div className="flex justify-center">
         <EventButton
@@ -21,7 +21,7 @@ export function Cart() {
 }
 
 function ProductRow({ name }) {
-  const  state  = useLoaderData();
+  const state = useLoaderData();
   return (
     <div className="flex w-full p-2">
       <div className="mr-10">{name}</div>

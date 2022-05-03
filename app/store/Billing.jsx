@@ -44,10 +44,10 @@ export function Billing() {
           <button
             type="submit"
             name="type"
-            value="Next"
+            value="Place Order"
             className="py-4 px-8 bg-blue-700 text-white rounded-full"
           >
-            Next »
+            Place Order
           </button>
         </div>
       </Form>

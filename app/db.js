@@ -7,7 +7,7 @@ export const db = {
     if (products.includes("Centered.app Hoodie")) {
       states.push("California");
     }
-    if (products.includes("Remix Conf 2022 T-shirt")) {
+    if (products.includes("Reactathon 2022 T-shirt")) {
       states.push("Utah");
     }
     states.sort();

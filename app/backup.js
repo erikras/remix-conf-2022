@@ -2,7 +2,7 @@ import { assign, createMachine } from "xstate";
 import { db } from "./db";
 
 export const swagStoreMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QGUDuBDKACZAXA9gE5gB0AwuobgMQAiYAxsQLZgB2uWACofhAK4NciUAAd8sAJa5J+NiJAAPRACYA7GpIA2AKwAOAIwAGACxH9BtSbUAaEAE9EavSQDMJgJwGtW1660q5jpqAL4hdmiYOATE5JQ0AJJsTGCsHNy8AkIK4lIycgrKCHqavvpaXpZ6rtU6do4Izm6e3r7+gTrBYREY2HhEpBRU1GQAFowA1vj8wkggudKy8nNFKtYkKjV+ejoqOgauB671iK6BG7trHlpGPiYqKt0gkX0xpMijkqKikmxQ1AAhdAMCZYAhYIazMQSRYFFaIYxGIzaayGAz6cxqAwqE4IPY6bRqTZeDzOQ5qIx6J4vaIDEgfL4-P7UAByYEUUPmMPyy1ART0ei0JFuFMsrh0fi8uJMgrcriMByMHhqBnuVPCz16tNiABl8OgIDhPt9fq90Lg4NQGSa-tFzXAsHqDZActyloVENVNJ0TGZdN5KZ5ceKVCQ1JdAu57mZXNStf1YlwADbA01YADyhAgYEI1Ez2cI3BTDBdcwWPI9eNu2hKvpUOxJehluN0JhIOhM-mcalJ+l2caiCdIAMkSaTpuoyeBYAzWZzrry7vhCBMvnblOCnb09aM6lxOl3Fx0Hn2WgOAtVOgHrzpI7HE6BIIXsN5SkQHgVYflHQ7Zj3DkQPsNksLRqjRX0iWvbUwGoABxfACGfCtly0KwSFXNRQKsVdrmPaVXBIJtXFFFRrnFA9QieNg+DgBQaSHOIqCQpc+VUAwXCxdRMVA7cdF8XEHiFHtxQ0DQSiRDx1R6Qc3npY0mSgZi4VYhBjAPNxt2MaoPGVHt93RI8T2xPwZV0KCGPzHMcEEEtYHgMs3WUt8EGPFwdK9Ix5SscNbAAhAtBlYVOwqQUe0pWMNXo2SnUNa0FLtC17OhRcnKKawPHQ0DiJuJFTBPYMzAuB4TAMLwbg6czZKnBg00swglNfIpvAy0j3F2LxtwVY4-JlDLw2PCVPGC7FKtvUdxz+BrKyJAiqgCvQFSsbwDH0gl8SMzZ3EFK9IvjN4ppQgiykFSoyVqExcQAWhKkh0QCUkWh0iVHjCEIgA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QGUDuBDKACZAXA9gE5gB0AwuobgMQAiYAxsQLZgB2uWACofhAK4NciUAAd8sAJa5J+NiJAAPRABYAnADYSKgMw6ArCoCMRvSoAcGgDQgAnogBM+oyX0AGDyf0B2fRr1uKgC+QTZomDgExOSUNACSbExgrBzcvAJCCuJSMnIKygjqaq46am5qanpG+vpq3jb2CEYaKtoVZf4qDhqBmiFhGNh4RKQUVNRkABaMANb4-MJIINnSsvJLBRpq5iTeRube3v5u5k71dog6Dq16V8ZOKro65v0g4UNRpMiTkqKikmwoNQAHJgRSLMQSVZ5DaIaoObwka4OQItA7eLo6BqXfQOEjNDS1DQaSzeNw6Iyvd6REYkb6-f6A6gAIXQDBmWAIWDGEOWUNy61ABSMDiuJGJKlRe3cKh82IQKNa5j03T0+j0W28Dipgxp0WZkgANoaAUDQeCsvy1vk4YZWkY3EYuhU3P5zLL5ZUbrdSiKTOoXqE3rrhvqjSamaz2ZactbYU19OZit5zCYnddKpVzPKdIF8cSWid3T4LDqIqHRnIAGaSQjMdAC6hcQ1ssBYADyhAgYEIMehgqUlx0WnMqNlko0KfM2YuCAlJGVVy2TpMlm1QepFfI1dr9cbAFEINIsAbjaa+wKbQgNQux4ZXVOZ41U0rbhoRSiTj4yx9aWQd3WDZrNQh7HvSfznksKyXvGpTFBSDjTuoToqP4aj6PKsqIqYRSHM4uKUhuIafNubA1oBjZRhyXI8hecZCkOI53hOj45uobQVMSVyGBSbj6D+eqkAAMvg6AQDgPwQYCkQNnA1DgYyHyybAWAiWJkB0TCDFNNUSqoohfjoYEOalAuKqHOSw6dAJW7Nmypodl2PbUJ23aENwLYMBpUFWlpg5ztsuz7IcxynHKs7zou3RqCu+waOuAzlp81AAOL4AQmkDgUXSem4JDtNsw7TtOroaCEQZsHwcAKJuJG0T5sZ+QUuI7A4ahtXsHQumobE6Bx2y4pOOhHDZJEKZBkKNVlcLDS4-gIhSKhkn4pw5jUZkBOoirVIGiW-mGZ6AplV7NNOSI+JOk7qKUzzyqOeJPM8ypkiiWyjX+AF7vRfJTSdoquKhljuG4iHxVcnp6PmLRdFsPh8To73RK5PY4IIXmwPADX9le059XsBw1N0zTOCo8qEjsi4GM86qHM8iPCaJ4njdJeDKcd8a40FBODcTTo5giG2ir4ewIt4aj0yQdkMA5yO9ljMHaRYD3tCtdqJhhEWQ7coMyv4ib0+z2n7PK+j5SrZJ7CSTpi+VQRAA */
   createMachine(
     {
       context: { cart: {} },
@@ -13,20 +13,27 @@ export const swagStoreMachine =
           {
             cond: "isCart",
             target: ".Cart",
+            internal: false,
           },
           {
             cond: "isShipping",
             target: ".Shipping",
+            internal: false,
           },
           {
             cond: "isBilling",
             target: ".Billing",
+            internal: false,
+          },
+          {
+            cond: "isConfirmation",
+            target: ".Confirmation",
+            internal: false,
           },
         ],
       },
       states: {
         Cart: {
-          tags: "pause",
           on: {
             "Decrement Product": {
               actions: "decrementProduct",
@@ -45,19 +52,44 @@ export const swagStoreMachine =
           },
         },
         Shipping: {
-          tags: "pause",
           on: {
-            "Back to Cart": {
-              target: "Cart",
-            },
             Next: {
               actions: "saveShipping",
               target: "Billing",
             },
+            "Back to Cart": {
+              target: "Cart",
+            },
+          },
+        },
+        Billing: {
+          on: {
+            Next: {
+              actions: "saveBilling",
+              target: "Confirmation",
+            },
+            Back: {
+              target: "Shipping",
+            },
+          },
+        },
+        Confirmation: {
+          on: {
+            "Place Order": {
+              target: "Placing Order",
+            },
+            "Edit Billing": {
+              target: "Billing",
+            },
+            "Edit Shipping": {
+              target: "Shipping",
+            },
+            "Back to Cart": {
+              target: "Cart",
+            },
           },
         },
         "Order Success": {
-          tags: "pause",
           type: "final",
         },
         "Load Shipping States": {
@@ -78,18 +110,6 @@ export const swagStoreMachine =
           on: {
             "Order Placed": {
               target: "Order Success",
-            },
-          },
-        },
-        Billing: {
-          tags: "pause",
-          on: {
-            "Place Order": {
-              actions: "saveBilling",
-              target: "Placing Order",
-            },
-            Back: {
-              target: "Shipping",
             },
           },
         },

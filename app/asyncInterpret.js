@@ -15,8 +15,6 @@ export async function asyncInterpret(
   return await waitFor(
     service,
     (state) => state.hasTag("pause") || state.done,
-    {
-      timeout: msToWait,
-    },
+    { timeout: msToWait },
   );
 }
