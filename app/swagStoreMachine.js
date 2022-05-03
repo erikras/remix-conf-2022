@@ -133,8 +133,6 @@ export const swagStoreMachine =
         isCart: (_context, event) => event.destination === "Cart",
         isShipping: (_context, event) => event.destination === "Shipping",
         isBilling: (_context, event) => event.destination === "Billing",
-        isConfirmation: (_context, event) =>
-          event.destination === "Confirmation",
         hasItems: ({ cart }) =>
           Object.values(cart).some((quantity) => quantity > 0),
       },
