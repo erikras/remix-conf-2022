@@ -5,7 +5,6 @@ import confetti from "../../confetti.css";
 import { swagStoreMachineCookie } from "../../cookies";
 import { Billing } from "../../store/Billing";
 import { Cart } from "../../store/Cart";
-import { Confirmation } from "../../store/Confirmation";
 import { NotFound } from "../../store/NotFound";
 import { OrderSuccess } from "../../store/OrderSuccess";
 import { Shipping } from "../../store/Shipping";
@@ -108,8 +107,6 @@ export default function Store() {
       return <Shipping />;
     case "Billing":
       return <Billing />;
-    case "Confirmation":
-      return <Confirmation />;
     case "Order Success":
       return <OrderSuccess />;
     default:
