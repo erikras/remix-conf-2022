@@ -1,4 +1,4 @@
-import { useActionData, useLoaderData } from "remix";
+import { useLoaderData } from "remix";
 import { EventButton } from "../components/EventButton";
 
 export function Cart() {
@@ -21,9 +21,7 @@ export function Cart() {
 }
 
 function ProductRow({ name }) {
-  const actionState = useActionData();
-  const loaderState = useLoaderData();
-  const state = actionState ?? loaderState;
+  const state = useLoaderData();
   return (
     <div className="flex w-full p-2">
       <div className="mr-10">{name}</div>
