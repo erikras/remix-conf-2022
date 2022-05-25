@@ -1,4 +1,4 @@
-import { json, redirect, useLoaderData } from "remix";
+import { json, redirect, useActionData, useLoaderData } from "remix";
 import { State } from "xstate";
 import { asyncInterpret } from "../../asyncInterpret";
 import confetti from "../../confetti.css";
@@ -87,18 +87,17 @@ export const action = async ({ request, params: { state } }) => {
       },
     });
   }
-  return json(
-    {},
-    {
-      headers: {
-        "Set-Cookie": await swagStoreMachineCookie.serialize(nextState),
-      },
+  return json(nextState, {
+    headers: {
+      "Set-Cookie": await swagStoreMachineCookie.serialize(nextState),
     },
-  );
+  });
 };
 
 export default function Store() {
-  const state = useLoaderData();
+  const actionState = useActionData();
+  const loaderState = useLoaderData();
+  const state = actionState ?? loaderState;
 
   switch (state.value) {
     case "Cart":
