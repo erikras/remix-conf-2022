@@ -80,13 +80,6 @@ export const action = async ({ request, params: { state } }) => {
     currentState,
     event,
   );
-  if (nextState.value !== state) {
-    return redirect(String(nextState.value), {
-      headers: {
-        "Set-Cookie": await swagStoreMachineCookie.serialize(nextState),
-      },
-    });
-  }
   return redirect(String(nextState.value), {
     headers: {
       "Set-Cookie": await swagStoreMachineCookie.serialize(nextState),
